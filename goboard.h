@@ -5,30 +5,37 @@
 #include <cstdlib>
 #include <cassert>
 #include <string>
-//#include <ctime>
+#include <vector>
+
 using namespace std;
 
-#define boardSize 11 
+//#define boardSize 11 
 
 class GoBoard
 {
  public:
   
-  GoBoard();
+  GoBoard(int boardSize);
+  ~GoBoard();
   bool emptySpace(int i, int j);
-  void printBoard();
+  void printBoard(int playerID);
   void printPrompt(int playerID, string playerColor);
   void setGo(int playerID, string playerColor, int i, int j);
   char getGo(int i, int j);
-  string getWinner();
+  int getSize(){return boardSize;}
+  int getNMoves(){return nmoves;}
+  char getWinner();
 
+  //void setGoTemp(char playerColor, int row, int col);
+  //void setBack(int row, int col);
+  
  private:
 
-  //int boardSize = 11; //default
   bool fiveConsecutive(int i, int j);
-  void printBoardInfo();
+  void printBoardInfo(int playerID);
 
-  char grid[boardSize][boardSize]; //in grid[col][row] form
+  char **grid;
+  int boardSize;
   int nrounds;
   int nmoves;
   int lastMove[2][2]; //reps players #(i+1)'s last move

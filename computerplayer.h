@@ -17,6 +17,8 @@ class ComputerPlayer: public Player{
   int minorDiagVal(GoBoard &, int, int);
   int calculateScore(int, int, int);
 
+  //void decision2(GoBoard &, int &iOpt, int &jOpt);
+  //int minimax(GoBoard &, int depth, bool isMax);
 };
 
 #endif

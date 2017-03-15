@@ -1,8 +1,12 @@
 #include "goboard.h"
 
 //GoBoard constructor
-GoBoard::GoBoard()
+GoBoard::GoBoard(int size)
 {
+  boardSize = size;
+  grid = new char* [size];
+  for(int i = 0; i < size; i++)
+    grid[i] = new char[size];
   for(int i = 0; i <  boardSize; i++)
     for(int j = 0; j < boardSize; j++)
       grid[i][j] = '.';
@@ -11,40 +15,21 @@ GoBoard::GoBoard()
   lastMove[0][0] = lastMove[0][1] = lastMove[1][0] = lastMove[1][1] = -1;
 }
 
+GoBoard::~GoBoard(){
+  for(int i = 0; i < boardSize; i++)
+    delete grid[i];
+  delete[] grid;
+}
+
 //returns true if board does not exist
 bool GoBoard::emptySpace(int i, int j){
   return grid[i][j] == '.';
 }
 
 //prints out basic board with both axes
-void GoBoard::printBoard(){
+void GoBoard::printBoard(int playerID){
   string border = "   +";
   cout << "   ";
-  /*
-  //prints out grid's horizontal axis
-  for(int i = 0; i < boardSize; i++){
-    cout << i + 1 << " ";
-    if(i < 9)
-      cout << " ";
-  }
-  
-  cout << endl;
-
-  //prints out grid's vertical axis
-  for(int i = 0; i < boardSize; i++){
-    char letter = 'A' + i;
-    cout << letter << " ";
-    for(int j = 0; j < boardSize; j++){
-      cout << grid[i][j];
-      if(j == boardSize - 1)
-	cout << endl;
-      else
-	cout << "  ";
-    }
-  }
-
-  printBoardInfo();
-  */
   
   //formats border string
   for(int i = 0; i < boardSize; i++)
@@ -57,19 +42,6 @@ void GoBoard::printBoard(){
   }
   
   cout << endl;
-
-  //prints out grid's vertical axis
-  /*for(int i = 0; i < boardSize; i++){
-    cout << i + 1 << " ";
-    for(int j = 0; j < boardSize; j++){
-      cout << grid[i][j];
-      if(j == boardSize - 1)
-	cout << endl;
-      else
-	cout << "  ";
-    }
-  }
-  */
   
   for(int i = 0; i < boardSize; i++){
     cout << border << endl;
@@ -86,19 +58,19 @@ void GoBoard::printBoard(){
 
   cout << border << endl;
 
-  printBoardInfo();	
+  printBoardInfo(playerID);	
 }
 
 //prompts human player for their move choice
 void GoBoard::printPrompt(int playerID, string playerColor){
-  if(playerID == 1){
-    cout << "Dark player (human) plays now" << endl;
-    cout << ">";
+  if(playerColor == "Dark"){
+    cout << playerColor << " player plays now" << endl;
+    //cout << ">";
     //cout << "Player #" << playerID <<" chooses: ";
   }
-  else if(playerID == 2){
-    cout << "Light player (COM) plays now" << endl;
-    cout << "Light player (COM) is calculating its next move... (this might take up to 30 seconds)";
+  else if(playerColor == "Light"){
+    cout << playerColor << " player plays now" << endl;
+    //cout << playerColor << " player (COM) is calculating its next move... (this might take up to 30 seconds)";
   }
 }
 
@@ -130,26 +102,21 @@ char GoBoard::getGo(int i, int j){
 
 
 //returns playerID of game winner
-string GoBoard::getWinner(){
+char GoBoard::getWinner(){
   for(int i = 0; i < boardSize; i++)
     for(int j = 0; j < boardSize; j++){
       if(fiveConsecutive(i, j)){
 	if(grid[i][j] == '.')
 	  cout << "[getWinner] cannot win at empty spot" << endl;
 	if(grid[i][j] == 'D')
-	  return "Dark";
+	  return 'D';
 	else
-	  return "Light";
+	  return 'L';
       }
     }
-  return "";
+  return '\0';
 }
 
-/*
-void GoBoard::randomTest(){
-
-}
-*/
 
 bool GoBoard::fiveConsecutive(int i, int j){
   char currentSpot = grid[i][j];
@@ -198,17 +165,35 @@ bool GoBoard::fiveConsecutive(int i, int j){
   
 }
 
-void GoBoard::printBoardInfo(){
+void GoBoard::printBoardInfo(int playerID){
   //cout << "nmoves: " << nmoves << ", nrounds: " << nrounds << endl;
-  char ch1 = 'a' + lastMove[0][0];
-  char ch2 = 'a' + lastMove[1][0];
-  if(ch1 == 'a' - 1){
+  char ch = 'a' + lastMove[playerID - 1][0];
+  //char ch2 = 'a' + lastMove[1][0];
+  //char col = 'a' + lastMove[getPlayerID]
+  if(ch == 'a' - 1){
     //cout << "last move player #1 (N/A)" << endl;
     //cout << "last move player #2 (N/A)\n" << endl;
     cout << "Move played: --" << endl;
   }
   else{
-    cout << "last move player #1 (" << ch1 << "," << lastMove[0][1] + 1 << ")" << endl;
-    cout << "last move player #2 (" << ch2 << "," << lastMove[1][1] + 1 << ")\n" << endl;
+    //cout << "last move player #1 (" << ch1 << "," << lastMove[0][1] + 1 << ")" << endl;
+    //cout << "last move player #2 (" << ch2 << "," << lastMove[1][1] + 1 << ")\n" << endl;
+    cout << "Move played: " << ch << lastMove[playerID - 1][1] + 1 << endl;
   }
 }
+
+//#######################################################################
+/*
+void GoBoard::setGoTemp(char playerColor, int row, int col){
+  if(playerColor == 'D')
+    grid[row][col] = 'D';
+  else if(playerColor == 'L')
+    grid[row][col] = 'L';
+  else
+    grid[row][col] = '.';
+}
+
+void GoBoard::setBack(int row, int col){
+  grid[row][col] = '.';
+}
+*/

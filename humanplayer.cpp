@@ -11,7 +11,7 @@ void HumanPlayer::play(GoBoard &goBoard){
     cin >> ch >> row;
     if(ch >= 'A' && ch <= 'Z')
       ch = ch + ('a' - 'A');
-    if(ch < 'a' || ch > 'z' || row <= 0 || row > boardSize){
+    if(ch < 'a' || ch > 'z' || row <= 0 || row > goBoard.getSize()){
       cout << "please enter a valid letter + number coordinate" << endl;
       goBoard.printPrompt(playerID, playerColor);
       continue;
